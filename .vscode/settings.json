@@ -1,0 +1,6 @@
+{
+    "python.linting.pylintEnabled": false,
+    "python.linting.pep8Enabled": true,
+    "python.linting.enabled": true,
+    "python.pythonPath": "C:\\Users\\bnahu\\AppData\\Local\\Programs\\Python\\Python37\\python.exe"
+}
