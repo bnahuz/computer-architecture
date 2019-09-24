@@ -4,7 +4,7 @@
 #Cada palavra está associada a um endereço
 #distemto, um número que varia de 0 até 1023.
 
-de bitstremg import BitArray, BitStream
+from bitstring import BitArray, BitStream
 
 
 class IAS:
@@ -24,6 +24,8 @@ class IAS:
 
         self.ops[b_opcode.read('bin:8')](b_endereco.int)   
 
+
+    #TRANSFERÊNCA DE DADOS
     def loadToAC(self, registro):
         self.AC = self.MQ
 
@@ -44,20 +46,23 @@ class IAS:
         aux ^ self.memoria[registro]
         self.AC = ((aux ^ n)-aux) | 0x8000000000
     
+    #DESVIO INCONDICIONAL    
     def jumpL(self, registro):
         ops[self.memoria[registro][0:19]](registro)
     
     def jumpR(self, registro):
         ops[self.memoria[registro][20:39]](registro)
 
+    #DESVIO CONDICIONAL
     def condJumpL(self, registro):
         if(self.AC[39] == 1):
             ops[self.memoria[registro][0:7]](self.memoria[registro][8:19].int)
     
-    def condJumpL(self, registro):
+    def condJumpR(self, registro):
         if(self.AC[39] == 1):
             ops[self.memoria[registro][20:27]](self.memoria[registro][28:40].int)
 
+    #ARITIMÉTICA
     def add(self, registro):
         self.AC = BitStream(int=self.AC.int + self.memoria[registro].int, length=40)    
 
@@ -79,9 +84,22 @@ class IAS:
         quo = BitStream(int=(self.AC.int / self.memoria[registro].int), length=40)
         rem = BitStream(int=self.AC.int % self.memoria[registro].int, length=40)
         self.AC = quo
-        self.MQ = rem        
+        self.MQ = rem
 
-    def __emit__(self):
+    def ls(self, registro):
+        self.AC <<= 1      
+
+    def rs(self, registro):
+        self.AC >>= 1
+
+    #MODIFICAÇÃO DE ENDEREÇO
+    def storL(self, registro):
+        self.memoria[registro][20:39] = self.AC[0:19]
+    
+    def storR(self, registro):
+        self.memoria[registro][0:19] = self.AC[0:19]
+      
+    def __init__(self):
         self.ops = {
         #TRANSFERÊNCA DE DADOS
         '00001010': self.loadToAC, #LOAD MQ Transfere o conteúdo do registro MQ para o AC
@@ -105,7 +123,7 @@ class IAS:
         '00001011': self.mul, #MUL M(X) Multiplica M(X) por M(Q); coloca os bits mais significativos do resultado em AC; coloca os bits menos significtivos em M(Q)
         '00001100': self.div, #DIV M(X) Divide AC por M(X); coloca cociente em MQ e o resto em AC        
         '00010100': self.ls, #LSH Multiplica o AC por 2; ou seja, desloca à esquerda uma posição de bit
-        '00010101': self.rs, #RSh Divide o AC por 2; ou seja, desloca uma posição à direita
+        '00010101': self.rs, #RSH Divide o AC por 2; ou seja, desloca uma posição à direita
         #MODIFICAÇÃO DE ENDEREÇO
         '00010010': self.storL, #STOR M(X,8:19) Substitui campo de endereço da esquerda em M(X) por 12 bits mais aà direita de AC
         '00010011': self.storR, #STOR M(X,28:39) Substitui campo de endereço da direita em M(X) por 12 bits mais aà direita de AC
@@ -114,12 +132,15 @@ class IAS:
         self.MQ = BitStream(emt=0, length=40)
         self.memoria = [] 
 
+        for i in range (1000):
+            self.memoria.append(BitStream(int=0, length=40))
+
 
 
 
 '''
 #Prefixo 0x para hexadecimal e 0b para bemário
-#Em bemário o primeiro 0 depois do b é o semal do número
+#Em binário o primeiro 0 depois do b 
 
 s = BitArray('0x000001b3, uemt:12=352, uemt:12=288')
 premt(s)'''
