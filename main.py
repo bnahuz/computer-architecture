@@ -21,7 +21,6 @@ class IAS:
     def instrucao(self, opcode, endereco):
         b_opcode = BitStream('0b' + opcode)
         b_endereco = BitStream('0b' + endereco)
-
         self.ops[b_opcode.read('bin:8')](b_endereco.int)   
 
 
@@ -39,13 +38,18 @@ class IAS:
         self.AC = self.memoria[registro]
 
     def loadNeg(self, registro):
-        self.AC = self.memoria[registro] | 0x8000000000
+        self.AC = self.memoria[-registro] 
 
     def loadAbs(self, registro):
         aux = self.memoria[registro] >> 39
         aux ^ self.memoria[registro]
-        self.AC = ((aux ^ n)-aux) | 0x8000000000
+        self.AC = (aux^n)-aux
     
+    def loadNegAbs(self, registro):
+        aux = self.memoria[registro] >> 39
+        aux ^ self.memoria[registro]
+        self.AC = ((aux^n)-aux) 
+
     #DESVIO INCONDICIONAL    
     def jumpL(self, registro):
         ops[self.memoria[registro][0:19]](registro)
@@ -104,7 +108,7 @@ class IAS:
         #TRANSFERÊNCA DE DADOS
         '00001010': self.loadToAC, #LOAD MQ Transfere o conteúdo do registro MQ para o AC
         '00001001': self.loadToMQ, #LOAD MQ,M(X) Transfere o contéudo do local de memória X para MQ
-        '00100001': self.store, #STOR M(X) Transfere o conteúdo de Ac para o local de memória X       
+        '00100001': self.store, #STOR M(X) Transfere o conteúdo de AC para o local de memória X       
         '00000001': self.load, #LOAD M(X) Transfere M(X) para o AC
         '00000010': self.loadNeg,  #LOAD -M(X) Transfere -M(X) para o AC
         '00000011': self.loadAbs, #LOAD |M(X)| Transfere o valor absoluto de M(X) para o AC
@@ -128,11 +132,11 @@ class IAS:
         '00010010': self.storL, #STOR M(X,8:19) Substitui campo de endereço da esquerda em M(X) por 12 bits mais aà direita de AC
         '00010011': self.storR, #STOR M(X,28:39) Substitui campo de endereço da direita em M(X) por 12 bits mais aà direita de AC
         }       
-        self.AC = BitStream(emt=0, length=40)
-        self.MQ = BitStream(emt=0, length=40)
+        self.AC = BitStream(int=0, length=40)
+        self.MQ = BitStream(int=0, length=40)
         self.memoria = [] 
 
-        for i in range (1000):
+        for i in range(1024):
             self.memoria.append(BitStream(int=0, length=40))
 
 
