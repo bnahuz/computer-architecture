@@ -10,10 +10,36 @@ for linha in arquivo:
     palavras.append(lista_leitura)
 arquivo.close()
 
-print(palavras)
+#print(palavras)
 
 ias = IAS()
 
+
+for instrucao in palavras:
+    if instrucao[0] == '00000000':
+        print("Fim do Progama")
+        break
+    else:
+        print('Esquerda')
+        print('Opcode: {}'.format(instrucao[0]))
+        print('Endereço: {}'.format(instrucao[1]))
+        ias.instrucao(instrucao[0], instrucao[1])
+        print('Conteudo do AC: {}'.format(ias.AC.bin))
+        print('----------------------')
+    if instrucao[2] == '00000000':
+        print("Fim do Progama")
+        break
+    else:
+        print('Direita')
+        print('Opcode: {}'.format(instrucao[2]))
+        print('Endereço: {}'.format(instrucao[3]))
+        ias.instrucao(instrucao[2], instrucao[3])
+        print('Conteudo do AC: {}'.format(ias.AC.bin))
+        print('----------------------')
+        
+        
+
+'''
 for instrucao in palavras:
     print(instrucao[0])
     print(instrucao[1])
@@ -25,29 +51,15 @@ for instrucao in palavras:
     print('-----------')
     #print(ias.AC)
 
-'''
-for instrucao in palavras:
-    if instrucao[0] == '00000000':
-        print("EOF")
-        break
-    else:
-        ias.instrucao(instrucao[0], instrucao[1])
-    if instrucao[2] == '00000000':
-        print("EOF")
-        break
-    else:
-        ias.instrucao(instrucao[2], instrucao[3])'''
 
-
-'''
 adicionar = [['00000001','000000000010'],['00000101','000000000011'],['00100001','000000000100']]
 multiplicar = [['00001001','000000000010'],['00001011','000000000011'],['00100001','000000000101']]
 dividir = [['00000001','000000000010'],['00001100','000000000011'],['00100001','000000000101'],['00001010','000000000000'],['00100001','000000000110']]
-'''
 
 
 
-'''
+
+
 ias.input('000000000011', 1)
 ias.input('000000000010', 2)
 

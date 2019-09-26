@@ -14,36 +14,32 @@ class IAS:
         b_endereco = BitStream('0b' + endereco)
         return self.memoria[b_endereco.int]
 
-    def input(self, endereco, valor):
-        b_endereco = BitStream('0b' + endereco)
-        self.memoria[b_endereco.int] = BitStream(int=valor, length=40)
-
     def instrucao(self, opcode, endereco):
         b_opcode = BitStream('0b' + opcode)
         b_endereco = BitStream('0b' + endereco)
-        self.ops[b_opcode.read('bin:8')](b_endereco.int)   
-
+        self.ops[b_opcode.read('bin:8')](b_endereco)#.int)   
 
     #TRANSFERÊNCA DE DADOS
     def loadToAC(self, registro):
         self.AC = self.MQ
 
     def loadToMQ(self, registro):
-        self.MQ = BitStream(int=self.memoria[registro].int,length=40)
+        self.MQ = BitStream(int=self.memoria[registro].int, length=40)
 
     def store(self, registro):
         self.memoria[registro] = self.AC
 
     def load(self, registro):
-        self.AC = self.memoria[registro]
+        self.AC = registro
 
     def loadNeg(self, registro):
-        self.AC = self.memoria[-registro] 
+        self.AC = registro
+        self.AC.invert(0)
 
     def loadAbs(self, registro):
-        aux = self.memoria[registro] >> 39
-        aux ^ self.memoria[registro]
-        self.AC = (aux^n)-aux
+        self.AC = registro
+        if self.AC[0] == True:
+            self.AC.invert(0)
     
     def loadNegAbs(self, registro):
         aux = self.memoria[registro] >> 39
