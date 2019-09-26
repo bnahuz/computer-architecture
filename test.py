@@ -13,9 +13,11 @@ arquivo.close()
 #print(palavras)
 
 ias = IAS()
-
+PC = 0
 
 for instrucao in palavras:
+    PC += 1
+    print('PC: {}'.format(PC))
     if instrucao[0] == '00000000':
         print("Fim do Progama")
         break
@@ -25,7 +27,10 @@ for instrucao in palavras:
         print('Endereço: {}'.format(instrucao[1]))
         ias.instrucao(instrucao[0], instrucao[1])
         print('Conteudo do AC: {}'.format(ias.AC.bin))
+        print('Conteudo do MQ: {}'.format(ias.MQ.bin))
         print('----------------------')
+    PC += 1
+    print('PC: {}'.format(PC))
     if instrucao[2] == '00000000':
         print("Fim do Progama")
         break
@@ -35,6 +40,7 @@ for instrucao in palavras:
         print('Endereço: {}'.format(instrucao[3]))
         ias.instrucao(instrucao[2], instrucao[3])
         print('Conteudo do AC: {}'.format(ias.AC.bin))
+        print('Conteudo do MQ: {}'.format(ias.MQ.bin))
         print('----------------------')
         
         

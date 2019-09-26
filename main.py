@@ -17,34 +17,33 @@ class IAS:
     def instrucao(self, opcode, endereco):
         b_opcode = BitStream('0b' + opcode)
         b_endereco = BitStream('0b' + endereco)
-        self.ops[b_opcode.read('bin:8')](b_endereco)#.int)   
+        self.ops[b_opcode.read('bin:8')](b_endereco)  
 
     #TRANSFERÊNCA DE DADOS
     def loadToAC(self, registro):
         self.AC = self.MQ
 
     def loadToMQ(self, registro):
-        self.MQ = BitStream(int=self.memoria[registro].int, length=40)
+        self.MQ = BitStream(int=self.memoria[registro.int].int, length=40)
 
     def store(self, registro):
-        self.memoria[registro] = self.AC
+        self.memoria[registro.int] = self.AC
 
     def load(self, registro):
-        self.AC = registro
+        self.AC = BitStream(int=registro.int, length=40)
 
     def loadNeg(self, registro):
-        self.AC = registro
+        self.AC = BitStream(int=registro.int, length=40)
         self.AC.invert(0)
 
     def loadAbs(self, registro):
-        self.AC = registro
+        self.load(registro)
         if self.AC[0] == True:
             self.AC.invert(0)
     
     def loadNegAbs(self, registro):
-        aux = self.memoria[registro] >> 39
-        aux ^ self.memoria[registro]
-        self.AC = ((aux^n)-aux) 
+        self.loadAbs(registro)
+        self.AC.invert(0)
 
     #DESVIO INCONDICIONAL    
     def jumpL(self, registro):
