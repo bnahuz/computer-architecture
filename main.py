@@ -63,25 +63,25 @@ class IAS:
 
     #ARITIMÉTICA
     def add(self, registro):
-        self.AC = BitStream(int=self.AC.int + self.memoria[registro].int, length=40)    
+        self.AC = BitStream(int=self.AC.int + self.memoria[registro.int].int, length=40)    
 
     def addAbs(self, registro):
-        self.AC = BitStream(int=self.AC.int + abs(self.memoria[registro].int), length=40)
+        self.AC = BitStream(int=self.AC.int + abs(self.memoria[registro.int].int), length=40)
 
     def sub(self, registro):
-        self.AC = BitStream(int=self.AC.int - self.memoria[registro].int, length=40)    
+        self.AC = BitStream(int=self.AC.int - self.memoria[registro.int].int, length=40)    
 
     def subRem(self, registro):
-        self.AC = BitStream(int=self.AC.int - abs(self.memoria[registro].int), length=40)
+        self.AC = BitStream(int=self.AC.int - abs(self.memoria[registro.int].int), length=40)
 
     def mul(self, registro):
-        res = BitStream(int=self.MQ.int * self.memoria[registro].int, length=40)
+        res = BitStream(int=self.MQ.int * self.memoria[registro.int].int, length=40)
         self.AC = BitStream(int=res[40:80].int, length=40)
         self.MQ = BitStream(int=res[0:39].int, length=40)
 
     def div(self, registro):
-        quo = BitStream(int=(self.AC.int / self.memoria[registro].int), length=40)
-        rem = BitStream(int=self.AC.int % self.memoria[registro].int, length=40)
+        quo = BitStream(int=(self.AC.int / self.memoria[registro.int].int), length=40)
+        rem = BitStream(int=self.AC.int % self.memoria[registro.int].int, length=40)
         self.AC = quo
         self.MQ = rem
 
